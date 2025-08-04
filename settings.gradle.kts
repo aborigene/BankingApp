@@ -16,8 +16,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+//        flatDir {
+//            dirs("libs")
+//        }
     }
 }
 
 rootProject.name = "BankingApp"
 include(":app")
+include(":paymentLibrary")

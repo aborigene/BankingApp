@@ -10,6 +10,13 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import java.text.NumberFormat
 import java.util.*
+import com.dynatracese.paymentlibrary.CancellationCallback
+import com.dynatracese.paymentlibrary.PaymentCallback
+import com.dynatracese.paymentlibrary.PaymentClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import android.widget.Toast
 
 class PaymentActivity : AppCompatActivity() {
 
@@ -41,11 +48,13 @@ class PaymentActivity : AppCompatActivity() {
     }
 
     private fun handlePayment() {
-        val recipient = recipientEditText.text.toString().trim()
+        val creditCard = recipientEditText.text.toString().trim()
         val amountString = amountEditText.text.toString().trim()
+        val paymentClient = PaymentClient("TEST_ONLY", this)
 
-        if (recipient.isEmpty()) {
-            showAlert("Erro", "Por favor, insira um beneficiário.")
+
+        if (creditCard.isEmpty()) {
+            showAlert("Erro", "Por favor, insira o numero do Cartao de Credito.")
             return
         }
 
@@ -63,12 +72,34 @@ class PaymentActivity : AppCompatActivity() {
         // Confirmação do pagamento
         AlertDialog.Builder(this)
             .setTitle("Confirmar Pagamento")
-            .setMessage("Você deseja pagar ${NumberFormat.getCurrencyInstance(Locale("pt", "BR")).format(amount)} para $recipient?")
+            .setMessage("Você deseja pagar ${NumberFormat.getCurrencyInstance(Locale("pt", "BR")).format(amount)} de $creditCard?")
             .setPositiveButton("Confirmar") { dialog, _ ->
+                CoroutineScope(Dispatchers.Main).launch {
+                    paymentClient.receivePayment(
+                        amount = amount,
+                        creditCardNumber = creditCard, // Exemplo de dados
+                        vendorName = "Loja de Exemplo",
+                        vendorId = "vendor_02",
+                        callback = object : PaymentCallback {
+                            override fun onPaymentSuccess(transactionId: String) {
+                                // O pagamento foi bem-sucedido.
+                                // Aqui você pode atualizar o saldo, mostrar uma mensagem de sucesso
+                                // ou navegar de volta para a tela inicial.
+                                //Toast.makeText(this@PaymentActivity, "Pagamento realizado! ID: $transactionId", Toast.LENGTH_LONG).show()
+                            }
+
+                            override fun onPaymentFailure(error: String) {
+                                // Ocorreu um erro no pagamento.
+                                // Exiba uma mensagem de erro para o usuário.
+                                //Toast.makeText(this@PaymentActivity, "Falha no pagamento: $error", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    )
+                }
                 val newBalance = currentBalance - amount
                 val newTransaction = Transaction(
                     id = UUID.randomUUID().toString(),
-                    description = "Pagamento para $recipient",
+                    description = "Pagamento de $creditCard",
                     amount = amount,
                     type = "payment",
                     date = Calendar.getInstance().time.toLocaleString()
@@ -80,7 +111,7 @@ class PaymentActivity : AppCompatActivity() {
                 }
                 setResult(Activity.RESULT_OK, resultIntent)
                 finish() // Finaliza a PaymentActivity e retorna para a MainActivity
-                showAlert("Sucesso!", "Pagamento de ${NumberFormat.getCurrencyInstance(Locale("pt", "BR")).format(amount)} para $recipient realizado com sucesso!")
+                showAlert("Sucesso!", "Pagamento de ${NumberFormat.getCurrencyInstance(Locale("pt", "BR")).format(amount)} de $creditCard realizado com sucesso!")
             }
             .setNegativeButton("Cancelar", null)
             .show()
