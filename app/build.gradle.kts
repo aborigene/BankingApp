@@ -40,5 +40,6 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation(files("libs/paymentlibrary-release.aar"))
+    implementation("com.dynatrace.openkit:openkit-java:3.3.0")
 
 }
