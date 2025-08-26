@@ -34,13 +34,13 @@
         android:id="@+id/payButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Fazer Pagamento"
-        android:textSize="18sp"
-        android:textColor="#fff"
-        android:backgroundTint="#007bff"
-        android:paddingVertical="15dp"
         android:layout_marginBottom="20dp"
-        android:elevation="5dp"/>
+        android:backgroundTint="#007bff"
+        android:elevation="5dp"
+        android:paddingVertical="15dp"
+        android:text="Fazer Pagamento"
+        android:textColor="#fff"
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/subHeaderText"

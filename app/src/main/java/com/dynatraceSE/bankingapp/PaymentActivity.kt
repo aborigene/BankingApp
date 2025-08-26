@@ -10,19 +10,18 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import java.text.NumberFormat
 import java.util.*
-import com.dynatracese.paymentlibrary.CancellationCallback
 import com.dynatracese.paymentlibrary.PaymentCallback
 import com.dynatracese.paymentlibrary.PaymentClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import android.widget.Toast
 
 class PaymentActivity : AppCompatActivity() {
 
     private lateinit var recipientEditText: EditText
     private lateinit var amountEditText: EditText
-    private lateinit var confirmPaymentButton: Button
+    private lateinit var confirmPaymentButtonComCrash: Button
+    private lateinit var confirmPaymentButtonSemCrash: Button
     private lateinit var backButton: Button
 
     private var currentBalance: Double = 0.0
@@ -33,13 +32,18 @@ class PaymentActivity : AppCompatActivity() {
 
         recipientEditText = findViewById(R.id.recipientEditText)
         amountEditText = findViewById(R.id.amountEditText)
-        confirmPaymentButton = findViewById(R.id.confirmPaymentButton)
+        confirmPaymentButtonComCrash = findViewById(R.id.confirmPaymentButtonComCrash)
+        confirmPaymentButtonSemCrash = findViewById(R.id.confirmPaymentButtonSemCrash)
         backButton = findViewById(R.id.backButton)
 
         currentBalance = intent.getDoubleExtra(MainActivity.EXTRA_BALANCE, 0.0)
 
-        confirmPaymentButton.setOnClickListener {
-            handlePayment()
+        confirmPaymentButtonComCrash.setOnClickListener {
+            handlePayment(true)
+        }
+
+        confirmPaymentButtonSemCrash.setOnClickListener {
+            handlePayment(false)
         }
 
         backButton.setOnClickListener {
@@ -47,10 +51,10 @@ class PaymentActivity : AppCompatActivity() {
         }
     }
 
-    private fun handlePayment() {
+    private fun handlePayment(crashStatus: Boolean) {
         val creditCard = recipientEditText.text.toString().trim()
         val amountString = amountEditText.text.toString().trim()
-        val paymentClient = PaymentClient("TEST_ONLY", this)
+        val paymentClient = PaymentClient("TEST_ONLY", this, crashStatus)
 
 
         if (creditCard.isEmpty()) {

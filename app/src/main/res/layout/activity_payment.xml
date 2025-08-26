@@ -45,16 +45,28 @@
         android:inputType="numberDecimal"/>
 
     <Button
-        android:id="@+id/confirmPaymentButton"
+        android:id="@+id/confirmPaymentButtonComCrash"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Pagar"
-        android:textSize="18sp"
-        android:textColor="#fff"
-        android:backgroundTint="#007bff"
-        android:paddingVertical="15dp"
         android:layout_marginBottom="20dp"
-        android:elevation="5dp"/>
+        android:backgroundTint="#007bff"
+        android:elevation="5dp"
+        android:paddingVertical="15dp"
+        android:text="Pagar com Crash"
+        android:textColor="#fff"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/confirmPaymentButtonSemCrash"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#007bff"
+        android:elevation="5dp"
+        android:paddingVertical="15dp"
+        android:text="Pagar sem Crash"
+        android:textColor="#fff"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/backButton"
