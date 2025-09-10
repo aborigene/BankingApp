@@ -23,6 +23,7 @@ class PaymentActivity : AppCompatActivity() {
     private lateinit var confirmPaymentButtonComCrash: Button
     private lateinit var confirmPaymentButtonSemCrash: Button
     private lateinit var backButton: Button
+    private lateinit var paymentClient: PaymentClient
 
     private var currentBalance: Double = 0.0
 
@@ -35,6 +36,10 @@ class PaymentActivity : AppCompatActivity() {
         confirmPaymentButtonComCrash = findViewById(R.id.confirmPaymentButtonComCrash)
         confirmPaymentButtonSemCrash = findViewById(R.id.confirmPaymentButtonSemCrash)
         backButton = findViewById(R.id.backButton)
+
+        //paymentClient = PaymentClient("TEST_ONLY", this)
+        // Get the singleton instance of PaymentClient
+        paymentClient = PaymentClient.getInstance("TEST_ONLY", this)
 
         currentBalance = intent.getDoubleExtra(MainActivity.EXTRA_BALANCE, 0.0)
 
@@ -54,8 +59,6 @@ class PaymentActivity : AppCompatActivity() {
     private fun handlePayment(crashStatus: Boolean) {
         val creditCard = recipientEditText.text.toString().trim()
         val amountString = amountEditText.text.toString().trim()
-        val paymentClient = PaymentClient("TEST_ONLY", this, crashStatus)
-
 
         if (creditCard.isEmpty()) {
             showAlert("Erro", "Por favor, insira o numero do Cartao de Credito.")
@@ -97,7 +100,8 @@ class PaymentActivity : AppCompatActivity() {
                                 // Exiba uma mensagem de erro para o usuário.
                                 //Toast.makeText(this@PaymentActivity, "Falha no pagamento: $error", Toast.LENGTH_LONG).show()
                             }
-                        }
+                        },
+                        crashStatus = crashStatus
                     )
                 }
                 val newBalance = currentBalance - amount
